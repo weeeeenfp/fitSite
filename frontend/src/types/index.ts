@@ -5,6 +5,7 @@ export type WorkoutCategory = "ball" | "cardio" | "weight";
 export type MealType = "早餐" | "午餐" | "晚餐" | "點心";
 export type PlanItemType = "重訓" | "有氧" | "球類" | "休息";
 export type WeekDay = "週一" | "週二" | "週三" | "週四" | "週五" | "週六" | "週日";
+export type MuscleGroup = "胸" | "背" | "肩" | "手臂" | "核心" | "腿" | "臀";
 
 export interface Profile {
   height: number; // cm
@@ -30,6 +31,7 @@ export interface WorkoutLog {
   intensity: Intensity;
   minutes: number;
   sets?: SetRecord[]; // 只有 category === "weight" 才有
+  muscleGroup?: MuscleGroup; // 只有重訓才有，供體態頁肌群統計用
   note: string;
   kcal: number; // 存檔當下算好，不要每次重算（體重會變動）
 }

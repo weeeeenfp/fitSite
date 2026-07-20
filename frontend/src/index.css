@@ -2,22 +2,28 @@
 
 :root {
   color-scheme: light dark;
+  --brand: #7c3aed;
 }
 
 * {
   box-sizing: border-box;
 }
 
+html,
 body {
   margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
   font-family: system-ui, "Segoe UI", "PingFang TC", "Noto Sans TC", sans-serif;
-  background: #f5f5f7;
+  background: #eef0f4;
   color: #111827;
 }
 
 @media (prefers-color-scheme: dark) {
+  html,
   body {
-    background: #0b0c0f;
+    background: #0a0b0e;
     color: #e5e7eb;
   }
 }
@@ -27,11 +33,34 @@ body {
   display: flex;
   flex-direction: column;
   max-width: 480px;
+  width: 100%;
   margin: 0 auto;
+  background: #f6f7f9;
+}
+
+@media (prefers-color-scheme: dark) {
+  #root {
+    background: #0d0e12;
+  }
 }
 
 input,
 select,
 textarea {
   font: inherit;
+}
+
+/* iOS 安全區域（瀏海／底部橫條） */
+.safe-top {
+  padding-top: env(safe-area-inset-top);
+}
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* 隱藏 number input 的上下箭頭，介面更乾淨 */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }

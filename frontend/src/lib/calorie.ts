@@ -1,4 +1,4 @@
-import type { Gender, Intensity, Profile, WorkoutCategory } from "../types";
+import type { Gender, Intensity, MuscleGroup, Profile, WorkoutCategory } from "../types";
 
 // MET 對照表 —— 熱量計算的單一事實來源，改公式或數值只動這個檔案。
 
@@ -27,27 +27,88 @@ export const CARDIO_MET: Record<string, Record<Intensity, number>> = {
   "其他": { 輕: 4.0, 中: 6.0, 高: 8.0 },
 };
 
-// 重訓分動作：複合動作（多關節、大肌群）MET 較高，孤立動作（單關節、小肌群）較低。
-export const WEIGHT_MET: Record<string, Record<Intensity, number>> = {
-  // 複合動作
-  "深蹲": { 輕: 4.5, 中: 6.0, 高: 7.5 },
-  "硬舉": { 輕: 5.0, 中: 6.5, 高: 8.0 },
-  "臥推": { 輕: 4.0, 中: 5.5, 高: 7.0 },
-  "上斜臥推": { 輕: 4.0, 中: 5.5, 高: 7.0 },
-  "肩推": { 輕: 4.0, 中: 5.5, 高: 7.0 },
-  "槓鈴划船": { 輕: 4.0, 中: 5.5, 高: 7.0 },
-  "引體向上": { 輕: 4.5, 中: 6.5, 高: 8.5 },
-  "滑輪下拉": { 輕: 3.5, 中: 5.0, 高: 6.5 },
-  "腿推": { 輕: 4.0, 中: 5.5, 高: 7.0 },
-  // 孤立動作
-  "二頭彎舉": { 輕: 3.0, 中: 4.0, 高: 5.0 },
-  "三頭下壓": { 輕: 3.0, 中: 4.0, 高: 5.0 },
-  "側平舉": { 輕: 3.0, 中: 4.0, 高: 5.0 },
-  "腿彎舉": { 輕: 3.0, 中: 4.0, 高: 5.0 },
-  "腿伸": { 輕: 3.0, 中: 4.0, 高: 5.0 },
-  "核心捲腹": { 輕: 3.0, 中: 4.0, 高: 5.0 },
-  "其他": { 輕: 3.5, 中: 5.0, 高: 6.0 },
-};
+// 重訓：先分肌群，再分器械 → 動作。複合動作（多關節、大肌群）MET 較高，孤立動作較低。
+export type Equipment = "槓鈴" | "啞鈴" | "機械" | "纜繩" | "徒手" | "史密斯";
+
+export interface WeightExercise {
+  name: string;
+  muscle: MuscleGroup;
+  equipment: Equipment;
+  met: Record<Intensity, number>;
+}
+
+const C = (輕: number, 中: number, 高: number): Record<Intensity, number> => ({ 輕, 中, 高 });
+
+export const WEIGHT_EXERCISES: WeightExercise[] = [
+  // 胸
+  { name: "槓鈴臥推", muscle: "胸", equipment: "槓鈴", met: C(4.0, 5.5, 7.0) },
+  { name: "啞鈴臥推", muscle: "胸", equipment: "啞鈴", met: C(4.0, 5.5, 7.0) },
+  { name: "上斜槓鈴臥推", muscle: "胸", equipment: "槓鈴", met: C(4.0, 5.5, 7.0) },
+  { name: "上斜啞鈴臥推", muscle: "胸", equipment: "啞鈴", met: C(4.0, 5.5, 7.0) },
+  { name: "蝴蝶機夾胸", muscle: "胸", equipment: "機械", met: C(3.5, 4.5, 5.5) },
+  { name: "纜繩夾胸", muscle: "胸", equipment: "纜繩", met: C(3.5, 4.5, 5.5) },
+  { name: "伏地挺身", muscle: "胸", equipment: "徒手", met: C(3.8, 5.0, 6.5) },
+  // 背
+  { name: "引體向上", muscle: "背", equipment: "徒手", met: C(4.5, 6.5, 8.5) },
+  { name: "滑輪下拉", muscle: "背", equipment: "纜繩", met: C(3.5, 5.0, 6.5) },
+  { name: "槓鈴划船", muscle: "背", equipment: "槓鈴", met: C(4.0, 5.5, 7.0) },
+  { name: "啞鈴單手划船", muscle: "背", equipment: "啞鈴", met: C(3.8, 5.0, 6.5) },
+  { name: "坐姿划船", muscle: "背", equipment: "機械", met: C(3.5, 5.0, 6.5) },
+  { name: "硬舉", muscle: "背", equipment: "槓鈴", met: C(5.0, 6.5, 8.0) },
+  // 肩
+  { name: "槓鈴肩推", muscle: "肩", equipment: "槓鈴", met: C(4.0, 5.5, 7.0) },
+  { name: "啞鈴肩推", muscle: "肩", equipment: "啞鈴", met: C(4.0, 5.5, 7.0) },
+  { name: "側平舉", muscle: "肩", equipment: "啞鈴", met: C(3.0, 4.0, 5.0) },
+  { name: "臉拉", muscle: "肩", equipment: "纜繩", met: C(3.0, 4.0, 5.0) },
+  { name: "機械肩推", muscle: "肩", equipment: "機械", met: C(3.5, 4.8, 6.0) },
+  // 手臂
+  { name: "槓鈴彎舉", muscle: "手臂", equipment: "槓鈴", met: C(3.2, 4.2, 5.2) },
+  { name: "啞鈴彎舉", muscle: "手臂", equipment: "啞鈴", met: C(3.0, 4.0, 5.0) },
+  { name: "三頭下壓", muscle: "手臂", equipment: "纜繩", met: C(3.0, 4.0, 5.0) },
+  { name: "窄握臥推", muscle: "手臂", equipment: "槓鈴", met: C(3.8, 5.0, 6.5) },
+  { name: "啞鈴三頭伸展", muscle: "手臂", equipment: "啞鈴", met: C(3.0, 4.0, 5.0) },
+  // 核心
+  { name: "捲腹", muscle: "核心", equipment: "徒手", met: C(3.0, 4.0, 5.0) },
+  { name: "棒式", muscle: "核心", equipment: "徒手", met: C(3.0, 4.0, 5.0) },
+  { name: "懸吊抬腿", muscle: "核心", equipment: "徒手", met: C(3.5, 4.5, 6.0) },
+  { name: "纜繩捲腹", muscle: "核心", equipment: "纜繩", met: C(3.0, 4.2, 5.2) },
+  // 腿
+  { name: "槓鈴深蹲", muscle: "腿", equipment: "槓鈴", met: C(4.5, 6.0, 7.5) },
+  { name: "腿推", muscle: "腿", equipment: "機械", met: C(4.0, 5.5, 7.0) },
+  { name: "腿伸", muscle: "腿", equipment: "機械", met: C(3.0, 4.0, 5.0) },
+  { name: "腿彎舉", muscle: "腿", equipment: "機械", met: C(3.0, 4.0, 5.0) },
+  { name: "啞鈴弓箭步", muscle: "腿", equipment: "啞鈴", met: C(4.0, 5.5, 7.0) },
+  { name: "羅馬尼亞硬舉", muscle: "腿", equipment: "槓鈴", met: C(4.5, 6.0, 7.5) },
+  // 臀
+  { name: "槓鈴臀推", muscle: "臀", equipment: "槓鈴", met: C(4.0, 5.5, 7.0) },
+  { name: "髖外展", muscle: "臀", equipment: "機械", met: C(3.0, 4.0, 5.0) },
+  { name: "相撲硬舉", muscle: "臀", equipment: "槓鈴", met: C(4.8, 6.2, 7.8) },
+  { name: "纜繩後踢腿", muscle: "臀", equipment: "纜繩", met: C(3.0, 4.0, 5.0) },
+  // 通用
+  { name: "其他", muscle: "核心", equipment: "徒手", met: C(3.5, 5.0, 6.0) },
+];
+
+export const MUSCLE_GROUPS: MuscleGroup[] = ["胸", "背", "肩", "手臂", "核心", "腿", "臀"];
+
+const EXERCISE_BY_NAME = new Map(WEIGHT_EXERCISES.map((e) => [e.name, e]));
+
+export function exercisesByMuscle(muscle: MuscleGroup): WeightExercise[] {
+  return WEIGHT_EXERCISES.filter((e) => e.muscle === muscle);
+}
+
+export function equipmentsOfMuscle(muscle: MuscleGroup): Equipment[] {
+  const seen = new Set<Equipment>();
+  for (const e of exercisesByMuscle(muscle)) seen.add(e.equipment);
+  return [...seen];
+}
+
+export function muscleGroupOf(name: string): MuscleGroup | undefined {
+  return EXERCISE_BY_NAME.get(name)?.muscle;
+}
+
+export const WEIGHT_MET: Record<string, Record<Intensity, number>> = Object.fromEntries(
+  WEIGHT_EXERCISES.map((e) => [e.name, e.met]),
+);
 
 export const MET_TABLES: Record<WorkoutCategory, Record<string, Record<Intensity, number>>> = {
   ball: BALL_MET,

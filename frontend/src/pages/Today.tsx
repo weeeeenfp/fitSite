@@ -57,37 +57,46 @@ export default function Today() {
       }
     >
       <div className="flex flex-col gap-4">
-        <Card title="今日熱量">
-          <div className="grid grid-cols-3 gap-2 text-center text-sm">
-            <div>
-              <div className="text-neutral-400">攝取</div>
-              <div className="text-lg font-semibold text-amber-500">{intake}</div>
+        <div className="rounded-2xl bg-gradient-to-br from-violet-600 to-indigo-500 p-4 text-white shadow-[0_10px_30px_-12px_rgba(124,58,237,0.6)]">
+          <div className="mb-1 text-xs text-white/70">今日淨熱量</div>
+          <div className="flex items-baseline gap-1">
+            <span className="text-4xl font-bold tracking-tight">{net > 0 ? "+" : ""}{net}</span>
+            <span className="text-sm text-white/70">kcal</span>
+          </div>
+          <div className="mt-3 grid grid-cols-3 gap-2 text-center text-sm">
+            <div className="rounded-xl bg-white/15 py-1.5">
+              <div className="text-[11px] text-white/70">攝取</div>
+              <div className="font-semibold">{intake}</div>
             </div>
-            <div>
-              <div className="text-neutral-400">運動消耗</div>
-              <div className="text-lg font-semibold text-violet-500">{burned}</div>
+            <div className="rounded-xl bg-white/15 py-1.5">
+              <div className="text-[11px] text-white/70">運動消耗</div>
+              <div className="font-semibold">{burned}</div>
             </div>
-            <div>
-              <div className="text-neutral-400">淨值</div>
-              <div className={`text-lg font-semibold ${net > 0 ? "text-red-500" : "text-green-500"}`}>{net > 0 ? "+" : ""}{net}</div>
+            <div className="rounded-xl bg-white/15 py-1.5">
+              <div className="text-[11px] text-white/70">基礎代謝</div>
+              <div className="font-semibold">{base}</div>
             </div>
           </div>
-          <p className="mt-2 text-center text-xs text-neutral-400">基礎代謝(含日常活動) {base} kcal · 淨值 = 攝取 − 基礎代謝 − 運動消耗</p>
-        </Card>
+          <p className="mt-2 text-center text-[11px] text-white/60">淨值 = 攝取 − 基礎代謝 − 運動消耗</p>
+        </div>
 
         <div className="grid grid-cols-4 gap-2">
-          <button type="button" onClick={() => setOpenForm("ball")} className="flex flex-col items-center gap-1 rounded-xl border border-black/10 py-3 text-xs dark:border-white/10">
-            <span className="text-xl">🏀</span>球類
-          </button>
-          <button type="button" onClick={() => setOpenForm("cardio")} className="flex flex-col items-center gap-1 rounded-xl border border-black/10 py-3 text-xs dark:border-white/10">
-            <span className="text-xl">🏃</span>有氧
-          </button>
-          <button type="button" onClick={() => setOpenForm("weight")} className="flex flex-col items-center gap-1 rounded-xl border border-black/10 py-3 text-xs dark:border-white/10">
-            <span className="text-xl">🏋️</span>重訓
-          </button>
-          <button type="button" onClick={() => setOpenForm("meal")} className="flex flex-col items-center gap-1 rounded-xl border border-black/10 py-3 text-xs dark:border-white/10">
-            <span className="text-xl">🍚</span>飲食
-          </button>
+          {([
+            ["ball", "🏀", "球類"],
+            ["cardio", "🏃", "有氧"],
+            ["weight", "🏋️", "重訓"],
+            ["meal", "🍚", "飲食"],
+          ] as const).map(([kind, icon, label]) => (
+            <button
+              key={kind}
+              type="button"
+              onClick={() => setOpenForm(kind)}
+              className="flex flex-col items-center gap-1 rounded-2xl border border-black/[0.06] bg-white py-3 text-xs font-medium shadow-sm transition active:scale-95 dark:border-white/[0.08] dark:bg-neutral-900"
+            >
+              <span className="text-2xl">{icon}</span>
+              {label}
+            </button>
+          ))}
         </div>
 
         <Card title="運動紀錄">

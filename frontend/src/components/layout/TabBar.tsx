@@ -15,20 +15,29 @@ interface TabBarProps {
 
 export default function TabBar({ active, onChange }: TabBarProps) {
   return (
-    <nav className="sticky bottom-0 z-40 flex border-t border-black/10 bg-white/95 backdrop-blur dark:border-white/10 dark:bg-neutral-900/95">
-      {TABS.map((tab) => (
-        <button
-          key={tab.key}
-          type="button"
-          onClick={() => onChange(tab.key)}
-          className={`flex flex-1 flex-col items-center gap-0.5 py-2 text-xs ${
-            active === tab.key ? "text-violet-600 dark:text-violet-400" : "text-neutral-500 dark:text-neutral-400"
-          }`}
-        >
-          <span className="text-lg leading-none">{tab.icon}</span>
-          {tab.label}
-        </button>
-      ))}
+    <nav className="safe-bottom sticky bottom-0 z-40 flex border-t border-black/[0.06] bg-white/85 px-2 pt-1.5 backdrop-blur-xl dark:border-white/[0.06] dark:bg-neutral-900/85">
+      {TABS.map((tab) => {
+        const on = active === tab.key;
+        return (
+          <button
+            key={tab.key}
+            type="button"
+            onClick={() => onChange(tab.key)}
+            className="flex flex-1 flex-col items-center gap-1 py-1.5"
+          >
+            <span
+              className={`flex h-8 w-14 items-center justify-center rounded-full text-lg leading-none transition ${
+                on ? "bg-violet-500/15" : ""
+              }`}
+            >
+              {tab.icon}
+            </span>
+            <span className={`text-[11px] ${on ? "font-semibold text-violet-600 dark:text-violet-400" : "text-neutral-500 dark:text-neutral-400"}`}>
+              {tab.label}
+            </span>
+          </button>
+        );
+      })}
     </nav>
   );
 }
