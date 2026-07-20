@@ -15,29 +15,25 @@ interface TabBarProps {
 
 export default function TabBar({ active, onChange }: TabBarProps) {
   return (
-    <nav className="safe-bottom sticky bottom-0 z-40 flex border-t border-black/[0.06] bg-white/85 px-2 pt-1.5 backdrop-blur-xl dark:border-white/[0.06] dark:bg-neutral-900/85">
-      {TABS.map((tab) => {
-        const on = active === tab.key;
-        return (
-          <button
-            key={tab.key}
-            type="button"
-            onClick={() => onChange(tab.key)}
-            className="flex flex-1 flex-col items-center gap-1 py-1.5"
-          >
-            <span
-              className={`flex h-8 w-14 items-center justify-center rounded-full text-lg leading-none transition ${
-                on ? "bg-violet-500/15" : ""
+    <div className="safe-bottom pointer-events-none sticky bottom-0 z-40 flex justify-center px-4 pb-3">
+      <nav className="pointer-events-auto flex items-center gap-1 rounded-full border border-black/[0.06] bg-white/90 px-2 py-1.5 shadow-[0_8px_30px_-8px_rgba(0,0,0,0.25)] backdrop-blur-xl dark:border-white/[0.08] dark:bg-neutral-800/90">
+        {TABS.map((tab) => {
+          const on = active === tab.key;
+          return (
+            <button
+              key={tab.key}
+              type="button"
+              onClick={() => onChange(tab.key)}
+              className={`flex flex-col items-center gap-0.5 rounded-full px-3.5 py-1.5 transition ${
+                on ? "bg-violet-600 text-white shadow-sm" : "text-neutral-500 dark:text-neutral-400"
               }`}
             >
-              {tab.icon}
-            </span>
-            <span className={`text-[11px] ${on ? "font-semibold text-violet-600 dark:text-violet-400" : "text-neutral-500 dark:text-neutral-400"}`}>
-              {tab.label}
-            </span>
-          </button>
-        );
-      })}
-    </nav>
+              <span className="text-base leading-none">{tab.icon}</span>
+              <span className="text-[10px] font-medium">{tab.label}</span>
+            </button>
+          );
+        })}
+      </nav>
+    </div>
   );
 }
